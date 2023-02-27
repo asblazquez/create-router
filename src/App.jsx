@@ -1,21 +1,17 @@
 import './App.css'
-import HomePage from './pages/Home'
-import AboutPage from './pages/About'
-import Page404 from './pages/404'
-import SearchPage from './pages/Search'
+import { lazy, Suspense } from 'react'
+
 import { Router } from './Router'
+import { Route } from './Route'
+
+const AboutPage = lazy(() => import('./pages/About'))
+const HomePage = lazy(() => import('./pages/Home'))
+const Page404 = lazy(() => import('./pages/404'))
+const SearchPage = lazy(() => import('./pages/Search'))
 
 function App() {
 
   const routes = [
-    {
-      path: '/',
-      Component: HomePage
-    },
-    {
-      path: '/about',
-      Component: AboutPage
-    },
     {
       path: '/search/:query',
       Component: SearchPage
@@ -25,7 +21,12 @@ function App() {
 
   return (
     <main>
-      <Router routes={routes} defaultComponent={Page404} />
+      <Suspense fallback={null}>
+        <Router routes={routes} defaultComponent={Page404}>
+          <Route path='/' Component={HomePage} />
+          <Route path='/about' Component={AboutPage} />
+        </Router>
+      </Suspense>
     </main>
   )
 }
